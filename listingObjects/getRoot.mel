@@ -1,0 +1,25 @@
+// Get Root Node
+{
+	string $joints[] = `ls -type joint`;
+	string $joint;
+
+	for ($joint in $joints)
+	{
+	    string $parents[] = `listRelatives -p $joint`;
+	    if ($parents[0] == "") // null check
+	    {
+	        print ("Root: " + $joint + "\n");
+	        break;
+	    }
+	};
+
+	// Get Leaf Nodes
+	for ($joint in $joints)
+	{
+		string $children[] = `listRelatives -c $joint`;
+		if ($children[0] == "")
+		{
+			print ("Found Leaf: " + $joint + "\n");
+		}
+	}
+}

@@ -1,1 +1,20 @@
-ls
+// create 100 Nodes
+{
+	// New
+	file -f -new;
+
+	// Get Creatable Node Types
+	$allCreatableTypes = `allNodeTypes`;
+
+	// Create until..
+	int $i = 100;
+	for ($someType in $allCreatableTypes)
+	{
+	    createNode $someType;
+	    $i -= 1;
+	    if ($i == 0)
+	    {
+	        break;
+		}
+    }
+}
