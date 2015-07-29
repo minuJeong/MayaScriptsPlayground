@@ -7,7 +7,7 @@
 	$allCreatableTypes = `allNodeTypes`;
 
 	// Create until..
-	int $i = 100;
+	int $i = 300;
 	for ($someType in $allCreatableTypes)
 	{
 	    createNode $someType;
@@ -17,4 +17,7 @@
 	        break;
 		}
     }
+
+    string $meshes[] = `ls -type mesh`;
+    print $meshes;
 }

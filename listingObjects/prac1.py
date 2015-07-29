@@ -6,53 +6,58 @@ import random
 cmds.file(f=True, new=True)
 
 radius = 12
-targetCount = 10
+targetCount = 100
 currentCount = 0
 
 prefix = "Prefix_"
 
 angleUnit = 360.0 / targetCount
-centerCube = cmds.polyCube() [0]
+centerSphere = cmds.polySphere() [0]
 
-allTypesOfNodes = cmds.allNodeTypes()
+# allTypesOfNodes = cmds.allNodeTypes()
+
+typeWhiteList = ("mesh", "transform", "cube", "cone", "sphere")
+createNodes = []
 
 # create 100 random cube
 while currentCount < targetCount:
-    if random.random() < 0.5:
-        newNode = cmds.polyCube (name="Prefix_") [0]
+	selectedIndex = random.randint (0, len(typeWhiteList))
+	selectedType = typeWhiteList[selectedIndex]
 
-        if random.random() < 0.1:
-    		cmds.aimConstraint (centerCube, newNode)
-    elif random.random() < 0.5:
-        newNode = cmds.polyCube () [0]
-        print cmds.objectType(newNode)
+	newNode = None
 
-        if random.random() < 0.1:
-    		cmds.aimConstraint (centerCube, newNode)
-        
-    else:
-    	a = random.randint(0, len (allTypesOfNodes))
+	if selectedType == "cone":
+		newNode = cmds.polyCone()[0]
+		if random.random() < 0.5:
+			cmds.aimConstraint (centerSphere, newNode)
+	elif selectedType == "cube":
+		newNode = cmds.polyCube()[0]
+		if random.random() < 0.5:
+			cmds.aimConstraint (centerSphere, newNode)
+	elif selectedType == "sphere":
+		newNode = cmds.polySphere()[0]
+	else:
+		newNode = cmds.createNode(selectedType)
 
-    	# don't create manipulator
-    	if allTypesOfNodes[a] != "Manipulator" and allTypesOfNodes[a] != "createEPManip" and allTypesOfNodes[a] != "cameraPlaneManip":
+	createNodes.append(newNode)
 
-    		print allTypesOfNodes[a]
-    		newNode = cmds.createNode(allTypesOfNodes[a])
-    
 
-    x = math.cos(angleUnit * i * (math.pi/180)) * radius
-    z = math.sin(angleUnit * i * (math.pi/180)) * radius
-    
-    if cmds.objExists(newNode + ".translateX"):
-    	cmds.setAttr (newNode + ".translateX", x)
-    if cmds.objExists(newNode + ".translateX"):
-    	cmds.setAttr (newNode + ".translateZ", z)
+	x = math.cos(angleUnit * currentCount * (math.pi/180)) * radius
+	z = math.sin(angleUnit * currentCount * (math.pi/180)) * radius
 
-    print "ls count: ", len (cmds.ls())
-    print cmds.ls(fl=True)
-    currentCount = len (cmds.ls())
+	if cmds.objExists(newNode + ".translateX"):
+		cmds.setAttr (newNode + ".translateX", x)
+	if cmds.objExists(newNode + ".translateX"):
+		cmds.setAttr (newNode + ".translateZ", z)
+
+	print "ls count: ", len (cmds.ls())
+	print cmds.ls(fl=True)
+
+	currentCount = len (createNodes)
 
 
 # Get objects start with "Prefix_"
-transforms = cmds.ls ("%s*"%(prefix), type="transform")
-print transforms
+# transforms = cmds.ls ("%s*"%(prefix), type="transform")
+meshes = cmds.ls ("%s*"%(prefix), type="mesh")
+
+print meshes
